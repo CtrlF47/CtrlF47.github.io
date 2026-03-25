@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tenho uma pergunta...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f0f12;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Evita scroll quando o botão foge */
+        }
+
+        .container {
+            text-align: center;
+            background: #1e1f22;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 25px;
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.4);
+            border: 1px solid #8a2be2;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column; /* Botões um sobre o outro no mobile fica melhor */
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        #sim {
+            background-color: #8a2be2;
+            color: white;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        #nao {
+            background-color: #2b2d31;
+            color: #999;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Efeito visual ao clicar no Sim */
+        #sim:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Quer namorar comigo? 💜</h1>
+        <div class="buttons">
+            <button id="sim" onclick="aceitou()">SIM!</button>
+            <button id="nao" ontouchstart="fugir()" onmouseover="fugir()">NÃO</button>
+        </div>
+    </div>
+
+    <script>
+       function aceitou() {
+    // Opcional: Um alerta rápido antes de ir para o outro site
+    alert("Não tinha outra opção né bb? Te amo! 💜");
+
+    // Aqui você coloca o link do site para onde ela será enviada
+    // Pode ser uma playlist do Spotify, um vídeo no YouTube ou um álbum de fotos
+    window.location.href = "https://www.google.com"; 
+        }
+        
+
+        function fugir() {
+            const botaoNao = document.getElementById('nao');
+            
+            // Calcula limites da tela para o botão não sair da área visível
+            const larguraTela = window.innerWidth - botaoNao.offsetWidth - 20;
+            const alturaTela = window.innerHeight - botaoNao.offsetHeight - 20;
+            
+            const randomX = Math.floor(Math.random() * larguraTela);
+            const randomY = Math.floor(Math.random() * alturaTela);
+            
+            botaoNao.style.position = 'absolute';
+            botaoNao.style.left = randomX + 'px';
+            botaoNao.style.top = randomY + 'px';
+        }
+    </script>
+
+</body>
+</html>
