@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Labore, Portal de Laudos Médicos</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ═══════════════════════ LOGIN SCREEN ═══════════════════════ -->
+  <div id="loginScreen" class="screen active">
+    <div class="login-bg">
+      <div class="login-orb orb1"></div>
+      <div class="login-orb orb2"></div>
+      <div class="login-orb orb3"></div>
+    </div>
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-icon">⚕</span>
+        <span class="logo-text">MedLaudo</span>
+      </div>
+      <p class="login-subtitle">Portal de Laudos Médicos</p>
+
+      <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchLoginTab('empresa')">Empresa</button>
+        <button class="tab-btn" onclick="switchLoginTab('medico')">Médico</button>
+      </div>
+
+      <div id="loginForm">
+        <div class="input-group">
+          <label>Login</label>
+          <input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off"/>
+        </div>
+        <div class="input-group">
+          <label>Senha</label>
+          <div class="password-wrap">
+            <input type="password" id="loginPass" placeholder="Digite sua senha"/>
+            <button class="toggle-pass" onclick="togglePass()" tabindex="-1">👁</button>
+          </div>
+        </div>
+        <div id="loginError" class="login-error hidden">Usuário ou senha incorretos.</div>
+        <button class="btn-primary btn-full" onclick="doLogin()">Entrar</button>
+      </div>
+
+      <p class="login-footer">Acesso restrito a profissionais autorizados</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ MAIN APP ═══════════════════════ -->
+  <div id="appScreen" class="screen">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="logo-icon">⚕</span>
+        <span class="logo-text">MedLaudo</span>
+        <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+      </div>
+
+      <div class="user-badge" id="userBadge"></div>
+
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="doLogout()">
+          <span>⏻</span> Sair
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-right">
+          <div class="avatar" id="topbarAvatar"></div>
+        </div>
+      </header>
+
+      <!-- PAGES -->
+      <div class="page-container">
+
+        <!-- ── DASHBOARD ── -->
+        <section class="page active" id="pageDashboard">
+          <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-desc" id="dashDesc">Visão geral do sistema</p>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+          <div class="recent-section">
+            <h2 class="section-title">Laudos Recentes</h2>
+            <div class="laudo-list" id="recentLaudos"></div>
+          </div>
+        </section>
+
+        <!-- ── UPLOAD LAUDO (médico) ── -->
+        <section class="page" id="pageUpload">
+          <div class="page-header">
+            <h1 class="page-title">Enviar Laudo</h1>
+            <p class="page-desc">Cadastre um novo laudo para um paciente</p>
+          </div>
+          <div class="card form-card">
+            <div class="form-grid">
+              <div class="input-group">
+                <label>Nome do Paciente *</label>
+                <input type="text" id="upPaciente" placeholder="Nome completo do paciente"/>
+              </div>
+              <div class="input-group">
+                <label>CPF do Paciente</label>
+                <input type="text" id="upCpf" placeholder="000.000.000-00" oninput="maskCPF(this)"/>
+              </div>
+              <div class="input-group">
+                <label>Empresa Vinculada *</label>
+                <select id="upEmpresa">
+                  <option value="">Selecione a empresa...</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Tipo de Exame *</label>
+                <select id="upTipo">
+                  <option value="">Selecione o tipo...</option>
+                  <option>Admissional</option>
+                  <option>Periódico</option>
+                  <option>Demissional</option>
+                  <option>Retorno ao Trabalho</option>
+                  <option>Mudança de Função</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Data do Exame *</label>
+                <input type="date" id="upData"/>
+              </div>
+              <div class="input-group">
+                <label>CID (opcional)</label>
+                <input type="text" id="upCid" placeholder="Ex: Z00.0"/>
+              </div>
+              <div class="input-group full-width">
+                <label>Conclusão / Resultado *</label>
+                <select id="upResultado">
+                  <option value="">Selecione...</option>
+                  <option value="Apto">✅ Apto</option>
+                  <option value="Apto com restrição">⚠️ Apto com restrição</option>
+                  <option value="Inapto">❌ Inapto</option>
+                </select>
+              </div>
+              <div class="input-group full-width">
+                <label>Observações</label>
+                <textarea id="upObs" rows="4" placeholder="Observações clínicas, restrições, recomendações..."></textarea>
+              </div>
+              <div class="input-group full-width">
+                <label>Anexar Arquivo (PDF/Imagem)</label>
+                <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()">
+                  <span class="file-icon">📎</span>
+                  <span id="fileLabel">Clique para selecionar ou arraste o arquivo aqui</span>
+                  <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this)"/>
+                </div>
+              </div>
+            </div>
+            <div id="uploadError" class="login-error hidden"></div>
+            <div id="uploadSuccess" class="upload-success hidden">✅ Laudo enviado com sucesso!</div>
+            <div class="form-actions">
+              <button class="btn-secondary" onclick="clearUploadForm()">Limpar</button>
+              <button class="btn-primary" onclick="submitLaudo()">Enviar Laudo</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── LAUDOS / PESQUISA ── -->
+        <section class="page" id="pageLaudos">
+          <div class="page-header">
+            <h1 class="page-title">Laudos</h1>
+            <p class="page-desc" id="laudosDesc">Consulte e pesquise laudos</p>
+          </div>
+          <div class="search-bar-wrap">
+            <div class="search-bar">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="searchInput" placeholder="Pesquisar por paciente, CPF, tipo de exame..." oninput="filterLaudos()"/>
+              <button class="clear-search" onclick="clearSearch()" id="clearSearchBtn" style="display:none">✕</button>
+            </div>
+            <div class="filter-row">
+              <select id="filterResultado" onchange="filterLaudos()">
+                <option value="">Todos os resultados</option>
+                <option value="Apto">Apto</option>
+                <option value="Apto com restrição">Apto com restrição</option>
+                <option value="Inapto">Inapto</option>
+              </select>
+              <select id="filterTipo" onchange="filterLaudos()">
+                <option value="">Todos os tipos</option>
+                <option>Admissional</option>
+                <option>Periódico</option>
+                <option>Demissional</option>
+                <option>Retorno ao Trabalho</option>
+                <option>Mudança de Função</option>
+                <option>Outro</option>
+              </select>
+              <select id="filterEmpresaLaudo" onchange="filterLaudos()" style="display:none">
+                <option value="">Todas as empresas</option>
+              </select>
+            </div>
+          </div>
+          <div id="laudosCount" class="results-count"></div>
+          <div class="laudo-table-wrap">
+            <table class="laudo-table">
+              <thead>
+                <tr>
+                  <th>Paciente</th>
+                  <th>CPF</th>
+                  <th>Empresa</th>
+                  <th>Tipo</th>
+                  <th>Data</th>
+                  <th>Resultado</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="laudosTableBody"></tbody>
+            </table>
+            <div id="emptyState" class="empty-state hidden">
+              <span>📋</span>
+              <p>Nenhum laudo encontrado.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── EMPRESAS (médico) ── -->
+        <section class="page" id="pageEmpresas">
+          <div class="page-header">
+            <h1 class="page-title">Gerenciar Empresas</h1>
+            <p class="page-desc">Cadastre e gerencie empresas parceiras</p>
+          </div>
+          <div class="card form-card">
+            <h2 class="form-title">Nova Empresa</h2>
+            <div class="form-grid">
+              <div class="input-group">
+                <label>Nome da Empresa *</label>
+                <input type="text" id="empNome" placeholder="Razão social"/>
+              </div>
+              <div class="input-group">
+                <label>CNPJ</label>
+                <input type="text" id="empCnpj" placeholder="00.000.000/0001-00" oninput="maskCNPJ(this)"/>
+              </div>
+              <div class="input-group">
+                <label>Usuário de Acesso *</label>
+                <input type="text" id="empUser" placeholder="login da empresa"/>
+              </div>
+              <div class="input-group">
+                <label>Senha *</label>
+                <input type="password" id="empSenha" placeholder="Senha de acesso"/>
+              </div>
+            </div>
+            <div id="empError" class="login-error hidden"></div>
+            <div id="empSuccess" class="upload-success hidden">✅ Empresa cadastrada com sucesso!</div>
+            <div class="form-actions">
+              <button class="btn-primary" onclick="addEmpresa()">Cadastrar Empresa</button>
+            </div>
+          </div>
+          <div class="recent-section">
+            <h2 class="section-title">Empresas Cadastradas</h2>
+            <div class="empresa-grid" id="empresaGrid"></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════ MODAL LAUDO ═══════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
